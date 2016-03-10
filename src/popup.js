@@ -66,6 +66,8 @@ return promise;
 
 pollPopup(){
   var self = this;
+                    window.localStorage.removeItem('auth-search');
+                    window.localStorage.removeItem('auth-hash');
   var promise =  new Promise((resolve,reject)=>{
     this.polling = setInterval(()=> {
       try {
