@@ -66,15 +66,33 @@ return promise;
 
 pollPopup(){
   var self = this;
+                    window.localStorage.removeItem('auth-search');
+                    window.localStorage.removeItem('auth-hash');
   var promise =  new Promise((resolve,reject)=>{
     this.polling = setInterval(()=> {
       try {
           var documentOrigin = document.location.host;
           var popupWindowOrigin = self.popupWindow.location.host;
 
- if (popupWindowOrigin === documentOrigin && (self.popupWindow.location.search || self.popupWindow.location.hash)) {
-        var queryParams = self.popupWindow.location.search.substring(1).replace(/\/$/, '');
-        var hashParams = self.popupWindow.location.hash.substring(1).replace(/[\/$]/, '');
+                  var hackSearch = window.localStorage.getItem('auth-search');
+                  var hackHash = window.localStorage.getItem('auth-hash');
+                  var queryParams = null;
+                  var hashParams = null;
+                  if (hackSearch != null && hackHash != null) {
+                    window.localStorage.removeItem('auth-search');
+                    window.localStorage.removeItem('auth-hash');
+                    queryParams = hackSearch.substring(1).replace(/\/$/, '');
+                    hashParams = hackHash.substring(1).replace(/[\/$]/, '');
+                  } else {
+                    var documentOrigin = document.location.host;
+                    var popupWindowOrigin = self.popupWindow.document.location.host;
+                    if (popupWindowOrigin === documentOrigin && (self.popupWindow.location.search || self.popupWindow.location.hash)) {
+                      queryParams = self.popupWindow.location.search.substring(1).replace(/\/$/, '');
+                      hashParams = self.popupWindow.location.hash.substring(1).replace(/[\/$]/, '');
+                    }
+                  }
+                  if (queryParams != null && hashParams != null) {
+
         var hash = authUtils.parseQueryString(hashParams);
         var qs = authUtils.parseQueryString(queryParams);
 
