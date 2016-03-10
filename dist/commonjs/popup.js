@@ -94,9 +94,6 @@ var Popup = (function () {
       var promise = new Promise(function (resolve, reject) {
         _this.polling = setInterval(function () {
           try {
-            var documentOrigin = document.location.host;
-            var popupWindowOrigin = self.popupWindow.location.host;
-
             var hackSearch = window.localStorage.getItem('auth-search');
             var hackHash = window.localStorage.getItem('auth-hash');
             var queryParams = null;
@@ -106,7 +103,7 @@ var Popup = (function () {
               window.localStorage.removeItem('auth-hash');
               queryParams = hackSearch.substring(1).replace(/\/$/, '');
               hashParams = hackHash.substring(1).replace(/[\/$]/, '');
-            } else {
+            } else if (document.location && self.popupWindow.document.location) {
               var documentOrigin = document.location.host;
               var popupWindowOrigin = self.popupWindow.document.location.host;
               if (popupWindowOrigin === documentOrigin && (self.popupWindow.location.search || self.popupWindow.location.hash)) {
